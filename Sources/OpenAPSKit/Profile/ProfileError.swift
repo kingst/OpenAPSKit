@@ -7,12 +7,12 @@
 
 import Foundation
 
-public enum ProfileError: LocalizedError {
+public enum ProfileError: LocalizedError, Equatable {
     case invalidDIA(value: Double)
     case invalidCurrentBasal(value: Double?)
     case invalidMaxDailyBasal(value: Double?)
     case invalidMaxBasal(value: Double?)
-    case invalidISF(value: Double)
+    case invalidISF(value: Double?)
     case invalidCarbRatio
     
     public var errorDescription: String? {
@@ -26,7 +26,7 @@ public enum ProfileError: LocalizedError {
         case .invalidMaxBasal(let value):
             return "Max basal of \(String(describing: value)) is not supported (must be >= 0.1)"
         case .invalidISF(let value):
-            return "ISF of \(value) is not supported (must be >= 5)"
+            return "ISF of \(String(describing: value)) is not supported (must be >= 5)"
         case .invalidCarbRatio:
             return "Profile wasn't given carb ratio data, cannot calculate carb_ratio"
         }

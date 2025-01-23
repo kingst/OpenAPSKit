@@ -2,13 +2,13 @@ import Foundation
 
 public struct CarbRatios: Codable {
     let units: CarbUnit
-    let schedule: [CarbRatioEntry]
+    var schedule: [CarbRatioEntry]
 }
 
 public struct CarbRatioEntry: Codable {
     let start: String
     let offset: Int
-    let ratio: Double
+    var ratio: Double
 }
 
 enum CarbUnit: String, Codable {

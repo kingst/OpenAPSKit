@@ -83,7 +83,7 @@ public struct Profile: Codable {
     public var modelString: String?
     public var basalprofile: [BasalProfileEntry]?
     public var isfProfile: InsulinSensitivities?
-    public var bgTargets: BGTargets?
+    public var bgTargets: ComputedBGTargets?
     public var carbRatios: CarbRatios?
 
     private enum CodingKeys: String, CodingKey {

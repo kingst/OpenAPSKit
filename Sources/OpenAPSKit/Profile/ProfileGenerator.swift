@@ -71,18 +71,82 @@ extension Profile {
 }
 
 public class ProfileGenerator {
-    
-    /// Direct port of JavaScript's generate function
+    /// This function is a port of the prepare/profile.js function from Trio, and it calls the core OpenAPS function
     public static func generate(
         pumpSettings: PumpSettings,
         bgTargets: BGTargets,
         basalProfile: [BasalProfileEntry],
         isf: InsulinSensitivities,
         preferences: Preferences,
-        carbRatio: CarbRatios,
-        tempTargets: TempTarget,
+        carbRatios: CarbRatios,
+        tempTargets: [TempTarget],
         model: String,
-        autotune: [String: Any]?
+        autotune: Autotune?,
+        freeaps: FreeAPSSettings
+    ) throws -> Profile {
+        let bgTargets = bgTargets.inMgDl()
+        var isf = isf.inMgDl()
+        let model = model.replacingOccurrences(of: "\"", with: "")
+        
+        guard carbRatios.schedule.count > 0 else {
+            throw ProfileError.invalidCarbRatio
+        }
+        
+        var preferences = preferences
+        switch (preferences.curve, preferences.useCustomPeakTime) {
+        case (.rapidActing, true):
+            preferences.insulinPeakTime = max(50, min(preferences.insulinPeakTime, 120))
+        case (.rapidActing, false):
+            preferences.insulinPeakTime = 75
+        case (.ultraRapid, true):
+            preferences.insulinPeakTime = max(35, min(preferences.insulinPeakTime, 100))
+        case (.ultraRapid, false):
+            preferences.insulinPeakTime = 55
+        default:
+            // don't do anything
+            print("don't modify insulin peak time")
+        }
+        
+        /* From Javascript
+         for (var pref in preferences) {
+           if (preferences.hasOwnProperty(pref)) {
+             inputs[pref] = preferences[pref];
+           }
+         }
+
+         inputs.max_iob = inputs.max_iob || 0;
+         */
+        // we don't need the logic above because it is handled by
+        // our update function
+        var basalProfile = basalProfile
+        var carbRatios = carbRatios
+        if let autotune = autotune {
+            if let basal = autotune.basalProfile {
+                basalProfile = basal
+            }
+            if !freeaps.onlyAutotuneBasals {
+                if let isfProfile = autotune.isfProfile {
+                    // TODO: should we convert this to mg/dL as well?
+                    isf = isfProfile
+                }
+                if let carbRatio = autotune.carbRatio {
+                    carbRatios.schedule[0].ratio = carbRatio
+                }
+            }
+        }
+        return try generate(pumpSettings: pumpSettings, bgTargets: bgTargets, basalProfile: basalProfile, isf: isf, preferences: preferences, carbRatios: carbRatios, tempTargets: tempTargets, model: model)
+    }
+    
+    /// Direct port of the OpenASP profile generate function
+    static func generate(
+        pumpSettings: PumpSettings,
+        bgTargets: BGTargets,
+        basalProfile: [BasalProfileEntry],
+        isf: InsulinSensitivities,
+        preferences: Preferences,
+        carbRatios: CarbRatios,
+        tempTargets: [TempTarget],
+        model: String
     ) throws -> Profile {
         // var profile = opts && opts.type ? opts : defaults( );
         var profile = Profile() // uses defaults
@@ -125,48 +189,52 @@ public class ProfileGenerator {
         }
         
         // var range = targets.bgTargetsLookup(inputs, profile);
-        let range = bgTargetsLookup(bgTargets, profile)
-        
-        // profile.out_units = inputs.targets.user_preferred_units;
-        profile.out_units = bgTargets.userPreferredUnits.rawValue
-        
+        profile.outUnits = bgTargets.userPreferredUnits.rawValue
+        let (updatedTargets, range) = Targets.bgTargetsLookup(targets: bgTargets, tempTargets: tempTargets, profile: profile)
         // profile.min_bg = Math.round(range.min_bg);
         // profile.max_bg = Math.round(range.max_bg);
-        profile.min_bg = range.min_bg
-        profile.max_bg = range.max_bg
-        
-        // profile.bg_targets = inputs.targets;
-        profile.bg_targets = bgTargets
-        
-        // Round bg_targets values
-        for index in 0..<bgTargets.targets.count {
-            profile.bg_targets?.targets[index].high = bgTargets.targets[index].high.rounded()
-            profile.bg_targets?.targets[index].low = bgTargets.targets[index].low.rounded()
-            // bg_entry.min_bg = Math.round(bg_entry.min_bg);
-            // bg_entry.max_bg = Math.round(bg_entry.max_bg);
-            // min_bg and max_bg are both undefined in our inputs
+        profile.minBg = range.minBg.rounded()
+        profile.maxBg = range.maxBg.rounded()
+        // Note: we're using updatedTargets here because in Javascript the bgTargetsLookup
+        // function mutates the input, so we want the mutated version in the
+        // profile and we need to round the properties
+        var roundedTargets = updatedTargets.targets.map { target -> ComputedBGTargetEntry in
+            ComputedBGTargetEntry(
+                low: target.low.rounded(),
+                high: target.high.rounded(),
+                start: target.start,
+                offset: target.offset,
+                maxBg: target.maxBg.rounded(),
+                minBg: target.minBg.rounded(),
+                temptargetSet: target.temptargetSet
+            )
         }
+
+        // Set the rounded targets on the profile
+        profile.bgTargets = ComputedBGTargets(
+            units: updatedTargets.units,
+            userPreferredUnits: updatedTargets.userPreferredUnits,
+            targets: roundedTargets
+        )
         
         // delete profile.bg_targets.raw;
         // Note: we don't need this in Swift as we don't have the raw property
         
-        // profile.temptargetSet = range.temptargetSet;
         profile.temptargetSet = range.temptargetSet
-        
-        // profile.sens = isf.isfLookup(inputs.isf);
-        profile.sens = isfLookup(isf)
-        
-        // profile.isfProfile = inputs.isf;
+        profile.sens = Isf.isfLookup(isfData: isf)
         profile.isfProfile = isf
         
-        if profile.sens < 5 {
-            print("ISF of \(profile.sens) is not supported")
+        guard let sens = profile.sens, sens >= 5 else {
+            print("ISF of \(String(describing: profile.sens)) is not supported")
             throw ProfileError.invalidISF(value: profile.sens)
         }
         
         // Handle carb ratio data
-        profile.carb_ratio = carbRatioLookup(carbRatio)
-        profile.carb_ratios = carbRatio
+        guard let currentCarbRatio = Carbs.carbRatioLookup(carbRatio: carbRatios) else {
+            throw ProfileError.invalidCarbRatio
+        }
+        profile.carbRatio = currentCarbRatio
+        profile.carbRatios = carbRatios
         
         return profile
     }
@@ -206,20 +274,5 @@ public class ProfileGenerator {
         // In Javascript Number is floating point, so we don't need to do
         // the * 1000 / 1000
         return maxBasal
-    }
-    
-    private static func bgTargetsLookup(_ bgTargets: BGTargets, _ profile: Profile) -> (min_bg: Int, max_bg: Int, temptargetSet: Bool) {
-        // Port of targets.bgTargetsLookup
-        return (0, 0, false)  // Placeholder
-    }
-    
-    private static func isfLookup(_ isf: InsulinSensitivities) -> Double {
-        // Port of isf.isfLookup
-        return 0  // Placeholder
-    }
-    
-    private static func carbRatioLookup(_ carbRatio: CarbRatios) -> Double {
-        // Port of carb_ratios.carbRatioLookup
-        return 0  // Placeholder
     }
 }
