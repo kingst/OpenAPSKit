@@ -9,11 +9,6 @@ import Foundation
 
 struct Carbs {
     static func carbRatioLookup(carbRatio: CarbRatios, now: Date = Date()) -> Double? {
-       // Verify units are supported
-       guard carbRatio.units == .grams || carbRatio.units == .exchanges else {
-           print("Error: Unsupported carb_ratio units \(carbRatio.units)")
-           return nil
-       }
        
        // Get last schedule as default
        guard let lastSchedule = carbRatio.schedule.last else { return nil }
@@ -35,10 +30,11 @@ struct Carbs {
        }
        
        // Convert exchanges to grams
-       if carbRatio.units == .exchanges {
-           currentRatio = 12 / currentRatio
-       }
-       
-       return currentRatio
+        switch (carbRatio.units) {
+        case .exchanges:
+            return currentRatio / 12
+        case .grams:
+            return currentRatio
+        }
     }
 }

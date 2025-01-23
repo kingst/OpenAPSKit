@@ -251,7 +251,7 @@ struct ProfileGeneratorTests {
             BasalProfileEntry(start: "00:00", minutes: 0, rate: 0.0)
         ]
         
-        #expect(throws: ProfileError.invalidCurrentBasal(value: 0.0)) {
+        #expect(throws: ProfileError.invalidCurrentBasal(value: nil)) {
             _ = try ProfileGenerator.generate(
                 pumpSettings: inputs.0,
                 bgTargets: inputs.1,

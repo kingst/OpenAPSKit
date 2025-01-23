@@ -116,7 +116,7 @@ public class ProfileGenerator {
 
          inputs.max_iob = inputs.max_iob || 0;
          */
-        // we don't need the logic above because it is handled by
+        // we don't need the JS logic above because it is handled by
         // our update function
         var basalProfile = basalProfile
         var carbRatios = carbRatios
@@ -167,12 +167,12 @@ public class ProfileGenerator {
         profile.modelString = model
         profile.skipNeutralTemps = preferences.skipNeutralTemps
         
-        profile.currentBasal = basalLookup(basalProfile)
+        profile.currentBasal = Basal.basalLookup(basalProfile)
         profile.basalprofile = basalProfile
         
         let basalProfile = basalProfile.map { BasalProfileEntry(start: $0.start, minutes: $0.minutes, rate: Double(($0.rate * 1000).rounded()) / 1000 )}
         
-        profile.maxDailyBasal = maxDailyBasal(basalProfile)
+        profile.maxDailyBasal = Basal.maxDailyBasal(basalProfile)
         profile.maxBasal = pumpSettings.maxBasal
         
         // this check is an error check profile.currentBasal === 0 in Javascript
@@ -190,22 +190,22 @@ public class ProfileGenerator {
         
         // var range = targets.bgTargetsLookup(inputs, profile);
         profile.outUnits = bgTargets.userPreferredUnits.rawValue
-        let (updatedTargets, range) = Targets.bgTargetsLookup(targets: bgTargets, tempTargets: tempTargets, profile: profile)
+        let (updatedTargets, range) = try Targets.bgTargetsLookup(targets: bgTargets, tempTargets: tempTargets, profile: profile)
         // profile.min_bg = Math.round(range.min_bg);
         // profile.max_bg = Math.round(range.max_bg);
-        profile.minBg = range.minBg.rounded()
-        profile.maxBg = range.maxBg.rounded()
+        profile.minBg = range.minBg?.rounded()
+        profile.maxBg = range.maxBg?.rounded()
         // Note: we're using updatedTargets here because in Javascript the bgTargetsLookup
         // function mutates the input, so we want the mutated version in the
         // profile and we need to round the properties
-        var roundedTargets = updatedTargets.targets.map { target -> ComputedBGTargetEntry in
+        let roundedTargets = updatedTargets.targets.map { target -> ComputedBGTargetEntry in
             ComputedBGTargetEntry(
                 low: target.low.rounded(),
                 high: target.high.rounded(),
                 start: target.start,
                 offset: target.offset,
-                maxBg: target.maxBg.rounded(),
-                minBg: target.minBg.rounded(),
+                maxBg: target.maxBg?.rounded(),
+                minBg: target.minBg?.rounded(),
                 temptargetSet: target.temptargetSet
             )
         }
@@ -237,42 +237,5 @@ public class ProfileGenerator {
         profile.carbRatios = carbRatios
         
         return profile
-    }
-    
-    private static func basalLookup(_ basalProfile: [BasalProfileEntry], now: Date? = nil) -> Double? {
-        let nowDate = now ?? Date()
-        
-        // Original had a sort but it was a no-op if 'i' wasn't present, so we can skip it
-        let basalProfileData = basalProfile
-        
-        guard let lastBasalRate = basalProfileData.last?.rate, lastBasalRate != 0 else {
-            print("ERROR: bad basal schedule \(basalProfile)")
-            return nil
-        }
-        
-        let calendar = Calendar.current
-        let components = calendar.dateComponents([.hour, .minute], from: nowDate)
-        let nowMinutes = (components.hour ?? 0) * 60 + (components.minute ?? 0)
-        
-        // Look for matching time slot
-        for i in 0..<(basalProfileData.count - 1) {
-            if nowMinutes >= basalProfileData[i].minutes &&
-               nowMinutes < basalProfileData[i + 1].minutes {
-                return Double(round(basalProfileData[i].rate * 1000)) / 1000
-            }
-        }
-        
-        // If no matching slot found, return last basal rate
-        return Double(round(lastBasalRate * 1000)) / 1000
-    }
-    
-    private static func maxDailyBasal(_ basalProfile: [BasalProfileEntry]) -> Double? {
-        guard let maxBasal = basalProfile.map({ $0.rate }).max() else {
-            return nil
-        }
-        
-        // In Javascript Number is floating point, so we don't need to do
-        // the * 1000 / 1000
-        return maxBasal
     }
 }

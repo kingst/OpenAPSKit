@@ -10,8 +10,8 @@ public struct ComputedBGTargetEntry: Codable {
     var high: Double
     var start: String
     var offset: Int
-    var maxBg: Double
-    var minBg: Double
+    var maxBg: Double?
+    var minBg: Double?
     var temptargetSet: Bool?
 }
 

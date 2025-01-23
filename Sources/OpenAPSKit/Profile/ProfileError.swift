@@ -14,6 +14,7 @@ public enum ProfileError: LocalizedError, Equatable {
     case invalidMaxBasal(value: Double?)
     case invalidISF(value: Double?)
     case invalidCarbRatio
+    case invalidBgTargets
     
     public var errorDescription: String? {
         switch self {
@@ -29,6 +30,8 @@ public enum ProfileError: LocalizedError, Equatable {
             return "ISF of \(String(describing: value)) is not supported (must be >= 5)"
         case .invalidCarbRatio:
             return "Profile wasn't given carb ratio data, cannot calculate carb_ratio"
+        case .invalidBgTargets:
+            return "Profile wasn't given bg target data"
         }
     }
 }
