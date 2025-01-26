@@ -32,7 +32,7 @@ struct Carbs {
        // Convert exchanges to grams
         switch (carbRatio.units) {
         case .exchanges:
-            return currentRatio / 12
+            return 12 / currentRatio
         case .grams:
             return currentRatio
         }

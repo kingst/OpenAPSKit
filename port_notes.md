@@ -65,6 +65,14 @@ them down to make sure we can keep an eye on it.
     would generate dynamically, but this is a potential source of
     inconsistencies.
 
+- ** Javascript type switching.** There is at least one property
+     (Profile.target_bg) where the Javascript implementation uses
+     boolean `false` as a proxy for Optional none, where the property
+     is a Number. I have a property annotation to deal with it, but
+     it's something we'll want to get rid of after the port. The Swift
+     implementation does _not_ use this behavior, we try to constrain
+     it to the serialization routines to maintain JSON compatibility.
+
 - **var now = new Date();** There are several places where the
     Javascript implementation gets the current time using `new
     Date()`. This style of time management can lead to issues if we're
