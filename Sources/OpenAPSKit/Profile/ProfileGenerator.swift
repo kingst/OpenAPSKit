@@ -221,7 +221,7 @@ public class ProfileGenerator {
         // Note: we don't need this in Swift as we don't have the raw property
         
         profile.temptargetSet = range.temptargetSet
-        profile.sens = Isf.isfLookup(isfData: isf)
+        profile.sens = try Isf.isfLookup(isfData: isf)
         profile.isfProfile = isf
         
         guard let sens = profile.sens, sens >= 5 else {
