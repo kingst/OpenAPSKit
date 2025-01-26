@@ -43,6 +43,16 @@ struct TargetTests {
         #expect(result.low == 100)
     }
     
+    @Test("should override from Profile targetBg")
+    func profileOverride() async throws {
+        let now = Calendar.current.date(from: DateComponents(year: 2025, month: 1, day: 26, hour: 1))!
+        var profile = Profile()
+        profile.targetBg = 110
+        let (_, result) = try Targets.bgTargetsLookup(targets: standardTargets, tempTargets: tempTargets, profile: profile, now: now)
+        #expect(result.high == 110)
+        #expect(result.low == 110)
+    }
+    
     @Test("should handle target schedule changes")
     func handleScheduleChanges() async throws {
         let now = Calendar.current.date(from: DateComponents(year: 2025, month: 1, day: 26, hour: 4))!
