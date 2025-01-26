@@ -4,12 +4,16 @@
 //
 //  Created by Sam King on 1/23/25.
 //
+//  The Javascript implementation was hard to port. First, it mutates
+//  the inputs in a way that is visible in the Profile. Second, there
+//  is a line of code where it sets the high value to low but only if
+//  it's not a temp target. I'm going to port it as is for now, but this
+//  is worth revisiting after we're done with the port.
 
 import Foundation
 
 struct Targets {
-    static func lookup(targets: BGTargets, tempTargets: [TempTarget], profile: Profile) throws -> (ComputedBGTargets, Int) {
-        let now = Date()
+    static func lookup(targets: BGTargets, tempTargets: [TempTarget], profile: Profile, now: Date) throws -> (ComputedBGTargets, Int) {
         
         // Find current target
         var bgComputedTargets = targets.targets.map { ComputedBGTargetEntry(low: $0.low, high: $0.high, start: $0.start, offset: $0.offset) }
@@ -78,8 +82,8 @@ struct Targets {
         
         return target
     }
-    static func bgTargetsLookup(targets: BGTargets, tempTargets: [TempTarget], profile: Profile) throws -> (ComputedBGTargets, ComputedBGTargetEntry) {
-        var (computedBgTargets, targetIdx) = try lookup(targets: targets, tempTargets: tempTargets, profile: profile)
+    static func bgTargetsLookup(targets: BGTargets, tempTargets: [TempTarget], profile: Profile, now: Date = Date()) throws -> (ComputedBGTargets, ComputedBGTargetEntry) {
+        var (computedBgTargets, targetIdx) = try lookup(targets: targets, tempTargets: tempTargets, profile: profile, now: now)
         let currentTarget = boundTargetRange(computedBgTargets.targets[targetIdx])
         computedBgTargets.targets[targetIdx] = currentTarget
         return (computedBgTargets, currentTarget)
