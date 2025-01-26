@@ -62,8 +62,7 @@ struct CarbRatioTests {
         let invalidSchedule2 = CarbRatios(
             units: .grams,
             schedule: [
-                CarbRatioEntry(start: "00:00:00", offset: 0, ratio: 200),
-                CarbRatioEntry(start: "03:00:00", offset: 180, ratio: 15)
+                CarbRatioEntry(start: "00:00:00", offset: 0, ratio: 200)
             ]
         )
 
