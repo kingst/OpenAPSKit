@@ -8,7 +8,7 @@
 import Foundation
 
 struct Basal {
-    static func basalLookup(_ basalProfile: [BasalProfileEntry], now: Date? = nil) -> Double? {
+    static func basalLookup(_ basalProfile: [BasalProfileEntry], now: Date? = nil) throws -> Double? {
         let nowDate = now ?? Date()
         
         // Original had a sort but it was a no-op if 'i' wasn't present, so we can skip it
@@ -21,7 +21,10 @@ struct Basal {
         
         let calendar = Calendar.current
         let components = calendar.dateComponents([.hour, .minute], from: nowDate)
-        let nowMinutes = (components.hour ?? 0) * 60 + (components.minute ?? 0)
+        guard let hour = components.hour, let minute = components.minute else {
+            throw ProfileError.invalidCalendar
+        }
+        let nowMinutes = hour * 60 + minute
         
         // Look for matching time slot
         for i in 0..<(basalProfileData.count - 1) {

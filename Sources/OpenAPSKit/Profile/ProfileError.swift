@@ -15,6 +15,7 @@ public enum ProfileError: LocalizedError, Equatable {
     case invalidISF(value: Double?)
     case invalidCarbRatio
     case invalidBgTargets
+    case invalidCalendar
     
     public var errorDescription: String? {
         switch self {
@@ -32,6 +33,8 @@ public enum ProfileError: LocalizedError, Equatable {
             return "Profile wasn't given carb ratio data, cannot calculate carb_ratio"
         case .invalidBgTargets:
             return "Profile wasn't given bg target data"
+        case .invalidCalendar:
+            return "Unable to extract hours and minutes from the current calendar"
         }
     }
 }

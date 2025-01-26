@@ -167,7 +167,7 @@ public class ProfileGenerator {
         profile.modelString = model
         profile.skipNeutralTemps = preferences.skipNeutralTemps
         
-        profile.currentBasal = Basal.basalLookup(basalProfile)
+        profile.currentBasal = try Basal.basalLookup(basalProfile)
         profile.basalprofile = basalProfile
         
         let basalProfile = basalProfile.map { BasalProfileEntry(start: $0.start, minutes: $0.minutes, rate: Double(($0.rate * 1000).rounded()) / 1000 )}
