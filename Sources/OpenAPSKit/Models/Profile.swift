@@ -23,10 +23,10 @@ public struct Profile: Codable {
     public var maxBasal: Double?
     public var minBg: Double?
     public var maxBg: Double?
-    public var targetBg: Double?
+    @JavascriptOptional public var targetBg: Double?
+    public var smbDeliveryRatio: Double = 0.5
     public var carbRatio: Double?
     public var sens: Double?
-    public var autosensAdjustTargets: Bool = false
     public var maxDailySafetyMultiplier: Double = 3
     public var currentBasalSafetyMultiplier: Double = 4
     public var highTemptargetRaisesSensitivity: Bool = false // raise sensitivity for temptargets >= 101
@@ -95,9 +95,9 @@ public struct Profile: Codable {
         case minBg = "min_bg"
         case maxBg = "max_bg"
         case targetBg = "target_bg"
+        case smbDeliveryRatio = "smb_delivery_ratio"
         case carbRatio = "carb_ratio"
         case sens
-        case autosensAdjustTargets = "autosens_adjust_targets"
         case maxDailySafetyMultiplier = "max_daily_safety_multiplier"
         case currentBasalSafetyMultiplier = "current_basal_safety_multiplier"
         case highTemptargetRaisesSensitivity = "high_temptarget_raises_sensitivity"
