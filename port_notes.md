@@ -115,6 +115,6 @@ it ASAP.
 
 For our port, we're using:
 
-- trio-oref git SHA: 363fd116bf69d728502a46f1df0f842a05944c7b
+- trio-oref (tcd branch) git SHA: ade267da32435df5e8edca5738a24b687f8ba001
 
-- Trio git SHA: d97ee5e87613e0609f86c71bf6a420f7c6207f83
+- Trio-dev (core-data-sync-trio branch) git SHA: dc43b0ae8fb106d7b30cf97e29d8a931efbf1339

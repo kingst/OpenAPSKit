@@ -21,7 +21,8 @@ let package = Package(
         ),
         .testTarget(
             name: "OpenAPSKitTests",
-            dependencies: ["OpenAPSKit"]
+            dependencies: ["OpenAPSKit"],
+            resources: [.process("Resources/profileDefaults.json")]
         ),
     ]
 )
