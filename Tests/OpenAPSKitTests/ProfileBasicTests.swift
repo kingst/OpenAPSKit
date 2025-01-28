@@ -27,7 +27,7 @@ struct ProfileBasicTests {
         let differences = try JSONCompare.differences(native: nativeDefaults, javascript: jsDefaults)
         #expect(differences.isEmpty, "Found differences between native and JS defaults: \(differences)")
         if !differences.isEmpty {
-            JSONCompare.prettyPrintDifferences(differences)
+            JSONCompare.prettyPrint(differences)
         }
     }
 }

@@ -15,11 +15,15 @@ struct Carbs {
         var currentRatio = lastSchedule.ratio
        
         // Find matching schedule for current time
-        for (curr, next) in zip(carbRatio.schedule, carbRatio.schedule.dropFirst()) {
-            if now >= MedtronicClock.getTime(minutes: curr.offset) && now < MedtronicClock.getTime(minutes: next.offset) {
-                currentRatio = curr.ratio
-                break
+        do {
+            for (curr, next) in zip(carbRatio.schedule, carbRatio.schedule.dropFirst()) {
+                if try now.isMinutesFromMidnightWithinRange(lowerBound: curr.offset, upperBound: next.offset) {
+                    currentRatio = curr.ratio
+                    break
+                }
             }
+        } catch {
+            return nil
         }
        
         // Check for invalid values

@@ -24,8 +24,7 @@ struct Targets {
         
         var targetIdx = bgComputedTargets.count - 1
         for (idx, (curr, next)) in zip(bgComputedTargets, bgComputedTargets.dropFirst()).enumerated() {
-            if now >= MedtronicClock.getTime(minutes: curr.offset) &&
-               now < MedtronicClock.getTime(minutes: next.offset) {
+            if try now.isMinutesFromMidnightWithinRange(lowerBound: curr.offset, upperBound: next.offset) {
                 targetIdx = idx
                 break
             }
