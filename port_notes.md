@@ -48,6 +48,20 @@ line-by-line port to be complete, and can make decisions about any
 further changes we'd like to make to the Swift implementation to
 improve maintainability.
 
+## Concurrency
+
+Our goal is to make each of the functions pure functions, meaning that
+they don't have any side effects and they're deterministic (given the
+same inputs they'll produce the same outputs). There are some caveats
+with floating point numbers and time (see [risks](#risks)), but so far
+it looks like it'll be possible.
+
+Having pure functions is a big benefit from a correctness perspective,
+it makes testing easier and it makes it easier for people to use it
+since they don't have to worry about ordering or sequencing
+functions. Javascript has single-threaded semantics with an event
+system, but we can ignore this if we can keep our functions pure.
+
 ## Risks
 
 Here is a list of where we think bugs might crop up, so we're writing
@@ -115,9 +129,12 @@ stats on how often the comparison has been done. Plus, we should have
 a way for people to opt-out if they want, but it's important that we
 have logging turned on by default to get the data we need.
 
-Also, if any of the prepare Javascript, the oref library, or the
-Models we copied have changed with Trio 1.0, we should switch over to
-it ASAP.
+## Todos
+
+So far, the biggest cleanup items are to see if we can avoid
+reproducing the logic that mutates inputs. There are a few TODOs in
+the code to mark these to evaluate later, but for now we'll just
+produce the same JSON that the Javascript library does.
 
 ## Sources
 

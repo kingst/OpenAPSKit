@@ -9,6 +9,8 @@
 //  is a line of code where it sets the high value to low but only if
 //  it's not a temp target. I'm going to port it as is for now, but this
 //  is worth revisiting after we're done with the port.
+//
+//  TODO: See if we can get rid of the logic that mutates inputs in Javascript
 
 import Foundation
 
