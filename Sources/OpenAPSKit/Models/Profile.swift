@@ -80,7 +80,7 @@ public struct Profile: Codable {
     public var weightPercentage: Double = 0.65
     public var tddAdjBasal: Bool = false
     public var thresholdSetting: Double = 60
-    public var modelString: String?
+    public var model: String?
     public var basalprofile: [BasalProfileEntry]?
     public var isfProfile: InsulinSensitivities?
     public var bgTargets: ComputedBGTargets?
@@ -149,7 +149,7 @@ public struct Profile: Codable {
         case weightPercentage
         case tddAdjBasal
         case thresholdSetting = "threshold_setting"
-        case modelString
+        case model
         case basalprofile
         case isfProfile
         case bgTargets = "bg_targets"

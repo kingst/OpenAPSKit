@@ -61,7 +61,16 @@ struct ValueDifference: Codable {
     let nativeKeyMissing: Bool
 }
 
-struct JSONCompare {
+public struct JSONCompare {
+    public static func logDifferences(label: String, native: String, nativeRuntime: TimeInterval, javascript: String, javascriptRuntime: TimeInterval) {
+        guard let differences = try? differences(native: native, javascript: javascript) else {
+            print("Exception calculating differences")
+            return;
+        }
+        
+        print("\(label) -> n: \(nativeRuntime)s, js: \(javascriptRuntime)s")
+        prettyPrint(differences)
+    }
     static func prettyPrint(_ differences: [String: ValueDifference]) {
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
@@ -80,7 +89,7 @@ struct JSONCompare {
         else {
             throw NSError(domain: "JSONBridge", code: 1, userInfo: [NSLocalizedDescriptionKey: "Invalid JSON format"])
         }
-
+        
         var differences: [String: ValueDifference] = [:]
 
         // Check all keys present in either dictionary
@@ -89,7 +98,7 @@ struct JSONCompare {
             let nativeValue = nativeDict[key].map(convertToJSONValue) ?? .null
             
             if !valuesAreEqual(jsValue, nativeValue) {
-                differences[key] = ValueDifference(js: jsValue, native: nativeValue, jsKeyMissing: jsDict.keys.contains(key), nativeKeyMissing: nativeDict.keys.contains(key))
+                differences[key] = ValueDifference(js: jsValue, native: nativeValue, jsKeyMissing: !jsDict.keys.contains(key), nativeKeyMissing: !nativeDict.keys.contains(key))
             }
         }
 

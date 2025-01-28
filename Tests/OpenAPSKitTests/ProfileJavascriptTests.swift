@@ -270,7 +270,7 @@ struct ProfileGeneratorTests {
     @Test("Profile should store model string correctly")
     func testModelString() throws {
         var inputs = createBaseInputs()
-        inputs.7 = "554"
+        inputs.7 = "\"554\"\n"
         
         let profile = try ProfileGenerator.generate(
             pumpSettings: inputs.0,
@@ -285,6 +285,6 @@ struct ProfileGeneratorTests {
             freeaps: inputs.9
         )
         
-        #expect(profile.modelString == "554")
+        #expect(profile.model == "554")
     }
 }

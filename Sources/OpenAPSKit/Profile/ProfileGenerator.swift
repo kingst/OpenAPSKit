@@ -31,7 +31,6 @@ extension Profile {
         bolusIncrement = preferences.bolusIncrement
         carbsReqThreshold = preferences.carbsReqThreshold
         remainingCarbsFraction = preferences.remainingCarbsFraction
-        autotuneIsfAdjustmentFraction = preferences.autotuneISFAdjustmentFraction
         enableSMBHighBgTarget = preferences.enableSMB_high_bg_target
         maxDeltaBgThreshold = preferences.maxDeltaBGthreshold
         insulinPeakTime = preferences.insulinPeakTime
@@ -86,7 +85,7 @@ public class ProfileGenerator {
     ) throws -> Profile {
         let bgTargets = bgTargets.inMgDl()
         var isf = isf.inMgDl()
-        let model = model.replacingOccurrences(of: "\"", with: "")
+        let model = model.replacingOccurrences(of: "\"", with: "").trimmingCharacters(in: .whitespacesAndNewlines)
         
         guard carbRatios.schedule.count > 0 else {
             throw ProfileError.invalidCarbRatio
@@ -118,22 +117,26 @@ public class ProfileGenerator {
          */
         // we don't need the JS logic above because it is handled by
         // our update function
-        var basalProfile = basalProfile
-        var carbRatios = carbRatios
+        
+        
+        // in Trio it looks like autotune is always null
+        /*
+         var basalProfile = basalProfile
+         var carbRatios = carbRatios
         if let autotune = autotune {
             if let basal = autotune.basalProfile {
                 basalProfile = basal
             }
-            if !freeaps.onlyAutotuneBasals {
-                if let isfProfile = autotune.isfProfile {
-                    // TODO: should we convert this to mg/dL as well?
-                    isf = isfProfile
-                }
-                if let carbRatio = autotune.carbRatio {
-                    carbRatios.schedule[0].ratio = carbRatio
-                }
+            // onlyAutotuneBasals is not defined in Swift
+            if let isfProfile = autotune.isfProfile {
+                // TODO: should we convert this to mg/dL as well?
+                isf = isfProfile
+            }
+            if let carbRatio = autotune.carbRatio {
+                carbRatios.schedule[0].ratio = carbRatio
             }
         }
+         */
         return try generate(pumpSettings: pumpSettings, bgTargets: bgTargets, basalProfile: basalProfile, isf: isf, preferences: preferences, carbRatios: carbRatios, tempTargets: tempTargets, model: model)
     }
     
@@ -164,7 +167,7 @@ public class ProfileGenerator {
             throw ProfileError.invalidDIA(value: pumpSettings.insulinActionCurve)
         }
         
-        profile.modelString = model
+        profile.model = model
         profile.skipNeutralTemps = preferences.skipNeutralTemps
         
         profile.currentBasal = try Basal.basalLookup(basalProfile)

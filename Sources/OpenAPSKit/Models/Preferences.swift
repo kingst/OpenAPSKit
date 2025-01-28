@@ -20,7 +20,6 @@ public struct Preferences: Codable {
     var skipNeutralTemps: Bool = false
     var unsuspendIfNoTemp: Bool = false
     var min5mCarbimpact: Double = 8
-    var autotuneISFAdjustmentFraction: Double = 1.0
     var remainingCarbsFraction: Double = 1.0
     var remainingCarbsCap: Double = 90
     var enableUAM: Bool = false
@@ -77,7 +76,6 @@ extension Preferences {
         case skipNeutralTemps = "skip_neutral_temps"
         case unsuspendIfNoTemp = "unsuspend_if_no_temp"
         case min5mCarbimpact = "min_5m_carbimpact"
-        case autotuneISFAdjustmentFraction = "autotune_isf_adjustmentFraction"
         case remainingCarbsFraction
         case remainingCarbsCap
         case enableUAM
