@@ -68,6 +68,7 @@ public struct JSONCompare {
             return;
         }
         
+        // TODO: For now we'll just print this out to the console but we'll add proper logging next
         print("\(label) -> n: \(nativeRuntime)s, js: \(javascriptRuntime)s")
         prettyPrint(differences)
     }
