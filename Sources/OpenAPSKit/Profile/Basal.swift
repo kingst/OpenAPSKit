@@ -19,18 +19,11 @@ struct Basal {
             return nil
         }
         
-        let calendar = Calendar.current
-        let components = calendar.dateComponents([.hour, .minute], from: nowDate)
-        guard let hour = components.hour, let minute = components.minute else {
-            throw ProfileError.invalidCalendar
-        }
-        let nowMinutes = hour * 60 + minute
-        
         // Look for matching time slot
-        for i in 0..<(basalProfileData.count - 1) {
-            if nowMinutes >= basalProfileData[i].minutes &&
-               nowMinutes < basalProfileData[i + 1].minutes {
-                return Double(round(basalProfileData[i].rate * 1000)) / 1000
+        for (curr, next) in zip(basalProfileData, basalProfileData.dropFirst()) {
+            if try nowDate.isMinutesFromMidnightWithinRange(lowerBound: curr.minutes, upperBound: next.minutes) {
+                
+                return Double(round(curr.rate * 1000)) / 1000
             }
         }
         

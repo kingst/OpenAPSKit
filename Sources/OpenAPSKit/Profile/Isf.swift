@@ -12,12 +12,6 @@ struct Isf {
     static func isfLookup(isfData: InsulinSensitivities, timestamp: Date? = nil) throws -> Double? {
         
         let now = timestamp ?? Date()
-        let calendar = Calendar.current
-        let components = calendar.dateComponents([.hour, .minute], from: now)
-        guard let minute = components.minute, let hour = components.hour else {
-            throw ProfileError.invalidCalendar
-        }
-        let nowMinutes = hour * 60 + minute
                 
         // Sort sensitivities by offset
         let sortedSensitivities = isfData.sensitivities.sorted { $0.offset < $1.offset }
@@ -35,7 +29,7 @@ struct Isf {
         
         // Find matching sensitivity for current time
         for (curr, next) in zip(sortedSensitivities, sortedSensitivities.dropFirst()) {
-            if nowMinutes >= curr.offset && nowMinutes < next.offset {
+            if try now.isMinutesFromMidnightWithinRange(lowerBound: curr.offset, upperBound: next.offset) {
                 isfSchedule = curr
                 break
             }
