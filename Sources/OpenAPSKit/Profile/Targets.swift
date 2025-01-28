@@ -13,6 +13,7 @@
 import Foundation
 
 struct Targets {
+    // TODO: Figure out if we can avoid mutating the input
     static func lookup(targets: BGTargets, tempTargets: [TempTarget], profile: Profile, now: Date) throws -> (ComputedBGTargets, Int) {
         
         // Find current target

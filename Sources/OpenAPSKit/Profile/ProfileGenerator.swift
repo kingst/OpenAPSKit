@@ -84,7 +84,7 @@ public class ProfileGenerator {
         freeaps: FreeAPSSettings
     ) throws -> Profile {
         let bgTargets = bgTargets.inMgDl()
-        var isf = isf.inMgDl()
+        let isf = isf.inMgDl()
         let model = model.replacingOccurrences(of: "\"", with: "").trimmingCharacters(in: .whitespacesAndNewlines)
         
         guard carbRatios.schedule.count > 0 else {
@@ -224,8 +224,9 @@ public class ProfileGenerator {
         // Note: we don't need this in Swift as we don't have the raw property
         
         profile.temptargetSet = range.temptargetSet
-        profile.sens = try Isf.isfLookup(isfData: isf)
-        profile.isfProfile = isf
+        let (sens, isfUpdated) = try Isf.isfLookup(isfData: isf)
+        profile.sens = sens
+        profile.isfProfile = isfUpdated
         
         guard let sens = profile.sens, sens >= 5 else {
             print("ISF of \(String(describing: profile.sens)) is not supported")
