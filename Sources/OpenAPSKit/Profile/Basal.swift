@@ -8,7 +8,7 @@
 import Foundation
 
 struct Basal {
-    static func basalLookup(_ basalProfile: [BasalProfileEntry], now: Date? = nil) throws -> Double? {
+    static func basalLookup(_ basalProfile: [OKBasalProfileEntry], now: Date? = nil) throws -> Double? {
         let nowDate = now ?? Date()
         
         // Original had a sort but it was a no-op if 'i' wasn't present, so we can skip it
@@ -31,7 +31,7 @@ struct Basal {
         return Double(round(lastBasalRate * 1000)) / 1000
     }
     
-    static func maxDailyBasal(_ basalProfile: [BasalProfileEntry]) -> Double? {
+    static func maxDailyBasal(_ basalProfile: [OKBasalProfileEntry]) -> Double? {
         guard let maxBasal = basalProfile.map({ $0.rate }).max() else {
             return nil
         }

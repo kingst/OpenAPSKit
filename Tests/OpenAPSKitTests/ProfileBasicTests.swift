@@ -19,7 +19,7 @@ struct ProfileBasicTests {
            
         let jsDefaults = try String(contentsOf: url)
        
-        let defaultProfile = Profile()
+        let defaultProfile = OKProfile()
         let encoder = JSONEncoder()
         encoder.outputFormatting = .prettyPrinted
         let nativeDefaults = String(data: try encoder.encode(defaultProfile), encoding: .utf8)!

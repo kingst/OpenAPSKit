@@ -1,6 +1,6 @@
 import Foundation
 
-public struct Preferences: Codable {
+public struct OKPreferences: Codable {
     var maxIOB: Double = 0
     var maxDailySafetyMultiplier: Double = 3
     var currentBasalSafetyMultiplier: Double = 4
@@ -55,7 +55,7 @@ public struct Preferences: Codable {
     var updateInterval: Double = 20
 }
 
-extension Preferences {
+extension OKPreferences {
     private enum CodingKeys: String, CodingKey {
         case maxIOB = "max_iob"
         case maxDailySafetyMultiplier = "max_daily_safety_multiplier"

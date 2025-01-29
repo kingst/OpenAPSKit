@@ -1,14 +1,14 @@
 import Foundation
 
-public struct Autotune: Codable {
+public struct OKAutotune: Codable {
     var createdAt: Date?
-    let basalProfile: [BasalProfileEntry]?
-    let isfProfile: InsulinSensitivities?
+    let basalProfile: [OKBasalProfileEntry]?
+    let isfProfile: OKInsulinSensitivities?
     let sensitivity: Double
     let carbRatio: Double?
 }
 
-extension Autotune {
+extension OKAutotune {
     private enum CodingKeys: String, CodingKey {
         case createdAt = "created_at"
         case basalProfile = "basalprofile"

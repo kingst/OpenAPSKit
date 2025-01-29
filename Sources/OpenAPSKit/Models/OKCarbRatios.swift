@@ -1,22 +1,22 @@
 import Foundation
 
-public struct CarbRatios: Codable {
-    let units: CarbUnit
-    var schedule: [CarbRatioEntry]
+public struct OKCarbRatios: Codable {
+    let units: OKCarbUnit
+    var schedule: [OKCarbRatioEntry]
 }
 
-public struct CarbRatioEntry: Codable {
+public struct OKCarbRatioEntry: Codable {
     let start: String
     let offset: Int
     var ratio: Double
 }
 
-enum CarbUnit: String, Codable {
+enum OKCarbUnit: String, Codable {
     case grams
     case exchanges
 }
 
-extension CarbRatioEntry {
+extension OKCarbRatioEntry {
     private enum CodingKeys: String, CodingKey {
         case start
         case offset
@@ -29,6 +29,6 @@ extension CarbRatioEntry {
         let offset = try container.decode(Int.self, forKey: .offset)
         let ratio = try container.decode(Double.self, forKey: .ratio)
 
-        self = CarbRatioEntry(start: start, offset: offset, ratio: ratio)
+        self = OKCarbRatioEntry(start: start, offset: offset, ratio: ratio)
     }
 }

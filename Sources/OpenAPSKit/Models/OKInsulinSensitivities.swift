@@ -1,22 +1,22 @@
 import Foundation
 
-public struct InsulinSensitivities: Codable {
-    let units: GlucoseUnits
-    let userPreferredUnits: GlucoseUnits
-    let sensitivities: [InsulinSensitivityEntry]
+public struct OKInsulinSensitivities: Codable {
+    let units: OKGlucoseUnits
+    let userPreferredUnits: OKGlucoseUnits
+    let sensitivities: [OKInsulinSensitivityEntry]
     
-    func inMgDl() -> InsulinSensitivities {
+    func inMgDl() -> OKInsulinSensitivities {
         switch (units) {
         case .mgdL:
             return self;
         case .mmolL:
-            let sensitivities = self.sensitivities.map { InsulinSensitivityEntry(sensitivity: $0.sensitivity * 18, offset: $0.offset, start: $0.start) }
-            return InsulinSensitivities(units: .mgdL, userPreferredUnits: self.userPreferredUnits, sensitivities: sensitivities)
+            let sensitivities = self.sensitivities.map { OKInsulinSensitivityEntry(sensitivity: $0.sensitivity * 18, offset: $0.offset, start: $0.start) }
+            return OKInsulinSensitivities(units: .mgdL, userPreferredUnits: self.userPreferredUnits, sensitivities: sensitivities)
         }
     }
 }
 
-extension InsulinSensitivities {
+extension OKInsulinSensitivities {
     private enum CodingKeys: String, CodingKey {
         case units
         case userPreferredUnits = "user_preferred_units"
@@ -24,7 +24,7 @@ extension InsulinSensitivities {
     }
 }
 
-public struct InsulinSensitivityEntry: Codable {
+public struct OKInsulinSensitivityEntry: Codable {
     let sensitivity: Double
     let offset: Int
     let start: String

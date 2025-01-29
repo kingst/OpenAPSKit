@@ -13,7 +13,7 @@
 
 import Foundation
 
-public struct Profile: Codable {
+public struct OKProfile: Codable {
     // Kotlin-defined properties from AndroidAPS OapsProfile.kt
     // with defaults pulled from profile.js
     public var dia: Double?
@@ -81,10 +81,10 @@ public struct Profile: Codable {
     public var tddAdjBasal: Bool = false
     public var thresholdSetting: Double = 60
     public var model: String?
-    public var basalprofile: [BasalProfileEntry]?
-    public var isfProfile: InsulinSensitivities?
+    public var basalprofile: [OKBasalProfileEntry]?
+    public var isfProfile: OKInsulinSensitivities?
     public var bgTargets: ComputedBGTargets?
-    public var carbRatios: CarbRatios?
+    public var carbRatios: OKCarbRatios?
 
     private enum CodingKeys: String, CodingKey {
         case dia

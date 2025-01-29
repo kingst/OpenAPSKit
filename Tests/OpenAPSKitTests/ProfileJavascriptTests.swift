@@ -12,56 +12,56 @@ import Foundation
 struct ProfileGeneratorTests {
     // Base test inputs that match the JavaScript test setup
     private func createBaseInputs() -> (
-        PumpSettings,
-        BGTargets,
-        [BasalProfileEntry],
-        InsulinSensitivities,
-        Preferences,
-        CarbRatios,
-        [TempTarget],
+        OKPumpSettings,
+        OKBGTargets,
+        [OKBasalProfileEntry],
+        OKInsulinSensitivities,
+        OKPreferences,
+        OKCarbRatios,
+        [OKTempTarget],
         String,
-        Autotune?,
-        FreeAPSSettings
+        OKAutotune?,
+        OKFreeAPSSettings
     ) {
-        let pumpSettings = PumpSettings(
+        let pumpSettings = OKPumpSettings(
             insulinActionCurve: 3,
             maxBolus: 10,
             maxBasal: 2
         )
         
-        let bgTargets = BGTargets(
+        let bgTargets = OKBGTargets(
             units: .mgdL,
             userPreferredUnits: .mgdL,
             targets: [
-                BGTargetEntry(low: 100, high: 120, start: "00:00", offset: 0)
+                OKBGTargetEntry(low: 100, high: 120, start: "00:00", offset: 0)
             ]
         )
         
         let basalProfile = [
-            BasalProfileEntry(start: "00:00", minutes: 0, rate: 1.0)
+            OKBasalProfileEntry(start: "00:00", minutes: 0, rate: 1.0)
         ]
         
-        let isf = InsulinSensitivities(
+        let isf = OKInsulinSensitivities(
             units: .mgdL,
             userPreferredUnits: .mgdL,
             sensitivities: [
-                InsulinSensitivityEntry(sensitivity: 100, offset: 0, start: "00:00")
+                OKInsulinSensitivityEntry(sensitivity: 100, offset: 0, start: "00:00")
             ]
         )
         
-        let preferences = Preferences()
+        let preferences = OKPreferences()
         
-        let carbRatios = CarbRatios(
+        let carbRatios = OKCarbRatios(
             units: .grams,
             schedule: [
-                CarbRatioEntry(start: "00:00", offset: 0, ratio: 20)
+                OKCarbRatioEntry(start: "00:00", offset: 0, ratio: 20)
             ]
         )
         
-        let tempTargets: [TempTarget] = []
+        let tempTargets: [OKTempTarget] = []
         let model = "523"
-        let autotune: Autotune? = nil
-        let freeaps = FreeAPSSettings()
+        let autotune: OKAutotune? = nil
+        let freeaps = OKFreeAPSSettings()
         
         return (pumpSettings, bgTargets, basalProfile, isf, preferences, carbRatios, tempTargets, model, autotune, freeaps)
     }
@@ -100,7 +100,7 @@ struct ProfileGeneratorTests {
         let currentTime = Date()
         let creationDate = currentTime.addingTimeInterval(-5 * 60)
         
-        let tempTarget = TempTarget(
+        let tempTarget = OKTempTarget(
             name: "Eating Soon",
             createdAt: creationDate,
             targetTop: 80,
@@ -143,7 +143,7 @@ struct ProfileGeneratorTests {
         let currentTime = Date()
         let creationDate = currentTime.addingTimeInterval(-90 * 60)
         
-        let tempTarget = TempTarget(
+        let tempTarget = OKTempTarget(
             name: "Eating Soon",
             createdAt: creationDate,
             targetTop: 80,
@@ -185,7 +185,7 @@ struct ProfileGeneratorTests {
         let currentTime = Date()
         let creationDate = currentTime.addingTimeInterval(-5 * 60)
         
-        let tempTarget = TempTarget(
+        let tempTarget = OKTempTarget(
             name: "Eating Soon",
             createdAt: creationDate,
             targetTop: 80,
@@ -222,7 +222,7 @@ struct ProfileGeneratorTests {
     @Test("Profile generation with invalid DIA should throw error")
     func testInvalidDIA() throws {
         var inputs = createBaseInputs()
-        inputs.0 = PumpSettings(
+        inputs.0 = OKPumpSettings(
             insulinActionCurve: 1,
             maxBolus: 10,
             maxBasal: 2
@@ -248,7 +248,7 @@ struct ProfileGeneratorTests {
     func testCurrentBasalZero() throws {
         var inputs = createBaseInputs()
         inputs.2 = [
-            BasalProfileEntry(start: "00:00", minutes: 0, rate: 0.0)
+            OKBasalProfileEntry(start: "00:00", minutes: 0, rate: 0.0)
         ]
         
         #expect(throws: ProfileError.invalidCurrentBasal(value: nil)) {

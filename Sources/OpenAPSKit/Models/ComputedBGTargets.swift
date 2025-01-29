@@ -28,8 +28,8 @@ extension ComputedBGTargetEntry {
 }
 
 public struct ComputedBGTargets: Codable {
-    let units: GlucoseUnits
-    let userPreferredUnits: GlucoseUnits
+    let units: OKGlucoseUnits
+    let userPreferredUnits: OKGlucoseUnits
     var targets: [ComputedBGTargetEntry]
 }
 

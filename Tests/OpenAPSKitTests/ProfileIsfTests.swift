@@ -11,13 +11,13 @@ import Foundation
 
 @Suite("ISF Profile")
 struct ISFTests {
-    let standardISF = InsulinSensitivities(
+    let standardISF = OKInsulinSensitivities(
         units: .mgdL,
         userPreferredUnits: .mgdL,
         sensitivities: [
-            InsulinSensitivityEntry(sensitivity: 100, offset: 0, start: "00:00:00"),
-            InsulinSensitivityEntry(sensitivity: 80, offset: 180, start: "03:00:00"),
-            InsulinSensitivityEntry(sensitivity: 90, offset: 360, start: "06:00:00")
+            OKInsulinSensitivityEntry(sensitivity: 100, offset: 0, start: "00:00:00"),
+            OKInsulinSensitivityEntry(sensitivity: 80, offset: 180, start: "03:00:00"),
+            OKInsulinSensitivityEntry(sensitivity: 90, offset: 360, start: "06:00:00")
         ]
     )
     
@@ -63,11 +63,11 @@ struct ISFTests {
     
     @Test("should return -1 for invalid profile with non-zero first offset")
     func handleInvalidProfile() async throws {
-        let invalidISF = InsulinSensitivities(
+        let invalidISF = OKInsulinSensitivities(
             units: .mgdL,
             userPreferredUnits: .mgdL,
             sensitivities: [
-                InsulinSensitivityEntry(sensitivity: 100, offset: 30, start: "00:30:00")
+                OKInsulinSensitivityEntry(sensitivity: 100, offset: 30, start: "00:30:00")
             ]
         )
         let (sensitivity, _) = try Isf.isfLookup(isfData: invalidISF)

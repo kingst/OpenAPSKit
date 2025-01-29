@@ -6,7 +6,7 @@
 //
 import Foundation
 
-extension Profile {
+extension OKProfile {
     /// Updates profile properties from preferences where CodingKeys match
     /// This function ended up being pretty ugly, but I couldn't think of a cleaner
     /// way. I considered converting to JSON or using Mirror, but these weren't
@@ -14,7 +14,7 @@ extension Profile {
     ///
     /// Also, this implementation does _not_ copy any of the optional properties
     /// since these should get set in the `generate` method.
-    mutating func update(from preferences: Preferences) {
+    mutating func update(from preferences: OKPreferences) {
         // Double properties
         maxIob = preferences.maxIOB
         min5mCarbImpact = preferences.min5mCarbimpact
@@ -72,17 +72,17 @@ extension Profile {
 public class ProfileGenerator {
     /// This function is a port of the prepare/profile.js function from Trio, and it calls the core OpenAPS function
     public static func generate(
-        pumpSettings: PumpSettings,
-        bgTargets: BGTargets,
-        basalProfile: [BasalProfileEntry],
-        isf: InsulinSensitivities,
-        preferences: Preferences,
-        carbRatios: CarbRatios,
-        tempTargets: [TempTarget],
+        pumpSettings: OKPumpSettings,
+        bgTargets: OKBGTargets,
+        basalProfile: [OKBasalProfileEntry],
+        isf: OKInsulinSensitivities,
+        preferences: OKPreferences,
+        carbRatios: OKCarbRatios,
+        tempTargets: [OKTempTarget],
         model: String,
-        autotune: Autotune?,
-        freeaps: FreeAPSSettings
-    ) throws -> Profile {
+        autotune: OKAutotune?,
+        freeaps: OKFreeAPSSettings
+    ) throws -> OKProfile {
         let bgTargets = bgTargets.inMgDl()
         let isf = isf.inMgDl()
         let model = model.replacingOccurrences(of: "\"", with: "").trimmingCharacters(in: .whitespacesAndNewlines)
@@ -142,17 +142,17 @@ public class ProfileGenerator {
     
     /// Direct port of the OpenASP profile generate function
     static func generate(
-        pumpSettings: PumpSettings,
-        bgTargets: BGTargets,
-        basalProfile: [BasalProfileEntry],
-        isf: InsulinSensitivities,
-        preferences: Preferences,
-        carbRatios: CarbRatios,
-        tempTargets: [TempTarget],
+        pumpSettings: OKPumpSettings,
+        bgTargets: OKBGTargets,
+        basalProfile: [OKBasalProfileEntry],
+        isf: OKInsulinSensitivities,
+        preferences: OKPreferences,
+        carbRatios: OKCarbRatios,
+        tempTargets: [OKTempTarget],
         model: String
-    ) throws -> Profile {
+    ) throws -> OKProfile {
         // var profile = opts && opts.type ? opts : defaults( );
-        var profile = Profile() // uses defaults
+        var profile = OKProfile() // uses defaults
         
         // check if inputs has overrides for any of the default prefs
         // and apply if applicable. Note, this comes from the generate/profile.js
@@ -173,7 +173,7 @@ public class ProfileGenerator {
         profile.currentBasal = try Basal.basalLookup(basalProfile)
         profile.basalprofile = basalProfile
         
-        let basalProfile = basalProfile.map { BasalProfileEntry(start: $0.start, minutes: $0.minutes, rate: Double(($0.rate * 1000).rounded()) / 1000 )}
+        let basalProfile = basalProfile.map { OKBasalProfileEntry(start: $0.start, minutes: $0.minutes, rate: Double(($0.rate * 1000).rounded()) / 1000 )}
         
         profile.maxDailyBasal = Basal.maxDailyBasal(basalProfile)
         profile.maxBasal = pumpSettings.maxBasal

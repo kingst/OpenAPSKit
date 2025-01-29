@@ -15,9 +15,9 @@ struct BasalTests {
     func findCurrentBasalRate() async throws {
         let now = Calendar.current.date(from: DateComponents(year: 2025, month: 1, day: 1, hour: 2))!
         let basalProfile = [
-            BasalProfileEntry(start: "00:00", minutes: 0, rate: 1.0),
-            BasalProfileEntry(start: "02:00", minutes: 120, rate: 2.0),
-            BasalProfileEntry(start: "03:00", minutes: 180, rate: 3.0)
+            OKBasalProfileEntry(start: "00:00", minutes: 0, rate: 1.0),
+            OKBasalProfileEntry(start: "02:00", minutes: 120, rate: 2.0),
+            OKBasalProfileEntry(start: "03:00", minutes: 180, rate: 3.0)
         ]
         
         let rate = try Basal.basalLookup(basalProfile, now: now)
@@ -28,9 +28,9 @@ struct BasalTests {
     func findMidnightBasalRate() async throws {
         let now = Calendar.current.date(from: DateComponents(year: 2025, month: 1, day: 1, hour: 0))!
         let basalProfile = [
-            BasalProfileEntry(start: "00:00", minutes: 0, rate: 1.0),
-            BasalProfileEntry(start: "02:00", minutes: 120, rate: 2.0),
-            BasalProfileEntry(start: "03:00", minutes: 180, rate: 3.0)
+            OKBasalProfileEntry(start: "00:00", minutes: 0, rate: 1.0),
+            OKBasalProfileEntry(start: "02:00", minutes: 120, rate: 2.0),
+            OKBasalProfileEntry(start: "03:00", minutes: 180, rate: 3.0)
         ]
         
         let rate = try Basal.basalLookup(basalProfile, now: now)
@@ -41,9 +41,9 @@ struct BasalTests {
     func findThreeAmBasalRate() async throws {
         let now = Calendar.current.date(from: DateComponents(year: 2025, month: 1, day: 1, hour: 3))!
         let basalProfile = [
-            BasalProfileEntry(start: "00:00", minutes: 0, rate: 1.0),
-            BasalProfileEntry(start: "02:00", minutes: 120, rate: 2.0),
-            BasalProfileEntry(start: "03:00", minutes: 180, rate: 3.0)
+            OKBasalProfileEntry(start: "00:00", minutes: 0, rate: 1.0),
+            OKBasalProfileEntry(start: "02:00", minutes: 120, rate: 2.0),
+            OKBasalProfileEntry(start: "03:00", minutes: 180, rate: 3.0)
         ]
         
         let rate = try Basal.basalLookup(basalProfile, now: now)
@@ -59,7 +59,7 @@ struct BasalTests {
     @Test("should handle a profile with just one rate")
     func handleSingleRateProfile() async throws {
         let basalProfile = [
-            BasalProfileEntry(start: "00:00", minutes: 0, rate: 1.0)
+            OKBasalProfileEntry(start: "00:00", minutes: 0, rate: 1.0)
         ]
         
         let rate = try Basal.basalLookup(basalProfile)
@@ -69,7 +69,7 @@ struct BasalTests {
     @Test("should return nil with a zero rate")
     func handleZeroRate() async throws {
         let basalProfile = [
-            BasalProfileEntry(start: "00:00", minutes: 0, rate: 0.0)
+            OKBasalProfileEntry(start: "00:00", minutes: 0, rate: 0.0)
         ]
         
         let rate = try Basal.basalLookup(basalProfile)
@@ -79,9 +79,9 @@ struct BasalTests {
     @Test("should properly compute maxDailyBasal")
     func computeMaxDailyBasal() async throws {
         let basalProfile = [
-            BasalProfileEntry(start: "00:00", minutes: 0, rate: 1.0),
-            BasalProfileEntry(start: "02:00", minutes: 120, rate: 2.0),
-            BasalProfileEntry(start: "03:00", minutes: 180, rate: 3.0)
+            OKBasalProfileEntry(start: "00:00", minutes: 0, rate: 1.0),
+            OKBasalProfileEntry(start: "02:00", minutes: 120, rate: 2.0),
+            OKBasalProfileEntry(start: "03:00", minutes: 180, rate: 3.0)
         ]
         
         let maxRate = Basal.maxDailyBasal(basalProfile)

@@ -1,12 +1,12 @@
 import Foundation
 
-public struct BasalProfileEntry: Codable, Equatable {
+public struct OKBasalProfileEntry: Codable, Equatable {
     let start: String
     let minutes: Int
     let rate: Double
 }
 
-extension BasalProfileEntry {
+extension OKBasalProfileEntry {
     private enum CodingKeys: String, CodingKey {
         case start
         case minutes
@@ -19,6 +19,6 @@ extension BasalProfileEntry {
         let minutes = try container.decode(Int.self, forKey: .minutes)
         let rate = try container.decode(Double.self, forKey: .rate)
 
-        self = BasalProfileEntry(start: start, minutes: minutes, rate: rate)
+        self = OKBasalProfileEntry(start: start, minutes: minutes, rate: rate)
     }
 }

@@ -9,7 +9,7 @@ import Foundation
 
 // I removed the cache that the Javascript version has to help keep it simple
 struct Isf {
-    static func isfLookup(isfData: InsulinSensitivities, timestamp: Date? = nil) throws -> (Double, InsulinSensitivities) {
+    static func isfLookup(isfData: OKInsulinSensitivities, timestamp: Date? = nil) throws -> (Double, OKInsulinSensitivities) {
         
         let now = timestamp ?? Date()
                 
@@ -45,12 +45,12 @@ struct Isf {
         
         let updatedSchedule = isfData.sensitivities.map { sensitivity in
             if sensitivity.id == isfSchedule.id {
-                return InsulinSensitivityEntry(sensitivity: sensitivity.sensitivity, offset: sensitivity.offset, start: sensitivity.start, endOffset: endMinutes, id: sensitivity.id)
+                return OKInsulinSensitivityEntry(sensitivity: sensitivity.sensitivity, offset: sensitivity.offset, start: sensitivity.start, endOffset: endMinutes, id: sensitivity.id)
             } else {
                 return sensitivity
             }
         }
         
-        return (isfSchedule.sensitivity, InsulinSensitivities(units: isfData.units, userPreferredUnits: isfData.userPreferredUnits, sensitivities: updatedSchedule))
+        return (isfSchedule.sensitivity, OKInsulinSensitivities(units: isfData.units, userPreferredUnits: isfData.userPreferredUnits, sensitivities: updatedSchedule))
     }
 }

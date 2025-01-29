@@ -11,12 +11,12 @@ import Foundation
 
 @Suite("Carb Ratio Profile")
 struct CarbRatioTests {
-    let standardSchedule = CarbRatios(
+    let standardSchedule = OKCarbRatios(
         units: .grams,
         schedule: [
-            CarbRatioEntry(start: "00:00:00", offset: 0, ratio: 15),
-            CarbRatioEntry(start: "03:00:00", offset: 180, ratio: 18),
-            CarbRatioEntry(start: "06:00:00", offset: 360, ratio: 20)
+            OKCarbRatioEntry(start: "00:00:00", offset: 0, ratio: 15),
+            OKCarbRatioEntry(start: "03:00:00", offset: 180, ratio: 18),
+            OKCarbRatioEntry(start: "06:00:00", offset: 360, ratio: 20)
         ]
     )
     
@@ -36,10 +36,10 @@ struct CarbRatioTests {
     
     @Test("should handle exchanges unit conversion")
     func handleExchanges() async throws {
-        let exchangeSchedule = CarbRatios(
+        let exchangeSchedule = OKCarbRatios(
             units: .exchanges,
             schedule: [
-                CarbRatioEntry(start: "00:00:00", offset: 0, ratio: 12)
+                OKCarbRatioEntry(start: "00:00:00", offset: 0, ratio: 12)
             ]
         )
         let ratio = Carbs.carbRatioLookup(carbRatio: exchangeSchedule)
@@ -48,21 +48,21 @@ struct CarbRatioTests {
     
     @Test("should reject invalid ratios")
     func rejectInvalidRatios() async throws {
-        let invalidSchedule = CarbRatios(
+        let invalidSchedule = OKCarbRatios(
             units: .grams,
             schedule: [
-                CarbRatioEntry(start: "00:00:00", offset: 0, ratio: 2),
-                CarbRatioEntry(start: "03:00:00", offset: 180, ratio: 15)
+                OKCarbRatioEntry(start: "00:00:00", offset: 0, ratio: 2),
+                OKCarbRatioEntry(start: "03:00:00", offset: 180, ratio: 15)
             ]
         )
         let now = Calendar.current.date(from: DateComponents(year: 2025, month: 1, day: 26, hour: 2))!
         var ratio = Carbs.carbRatioLookup(carbRatio: invalidSchedule, now: now)
         #expect(ratio == nil)
 
-        let invalidSchedule2 = CarbRatios(
+        let invalidSchedule2 = OKCarbRatios(
             units: .grams,
             schedule: [
-                CarbRatioEntry(start: "00:00:00", offset: 0, ratio: 200)
+                OKCarbRatioEntry(start: "00:00:00", offset: 0, ratio: 200)
             ]
         )
 

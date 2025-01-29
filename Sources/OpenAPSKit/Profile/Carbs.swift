@@ -8,7 +8,7 @@
 import Foundation
 
 struct Carbs {
-    static func carbRatioLookup(carbRatio: CarbRatios, now: Date = Date()) -> Double? {
+    static func carbRatioLookup(carbRatio: OKCarbRatios, now: Date = Date()) -> Double? {
        
         // Get last schedule as default
         guard let lastSchedule = carbRatio.schedule.last else { return nil }

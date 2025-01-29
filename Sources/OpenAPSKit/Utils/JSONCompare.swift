@@ -54,7 +54,7 @@ enum JSONValue: Codable {
     }
 }
 
-struct ValueDifference: Codable {
+public struct ValueDifference: Codable {
     let js: JSONValue
     let native: JSONValue
     let jsKeyMissing: Bool
@@ -72,7 +72,7 @@ public struct JSONCompare {
         print("\(label) -> n: \(nativeRuntime)s, js: \(javascriptRuntime)s")
         prettyPrint(differences)
     }
-    static func prettyPrint(_ differences: [String: ValueDifference]) {
+    public static func prettyPrint(_ differences: [String: ValueDifference]) {
         let encoder = JSONEncoder()
         encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
         
@@ -82,7 +82,7 @@ public struct JSONCompare {
         }
     }
     
-    static func differences(native: String, javascript: String) throws -> [String: ValueDifference] {
+    public static func differences(native: String, javascript: String) throws -> [String: ValueDifference] {
         guard let jsData = javascript.data(using: .utf8),
               let nativeData = native.data(using: .utf8),
               let jsDict = try JSONSerialization.jsonObject(with: jsData) as? [String: Any],

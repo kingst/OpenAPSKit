@@ -136,6 +136,11 @@ reproducing the logic that mutates inputs. There are a few TODOs in
 the code to mark these to evaluate later, but for now we'll just
 produce the same JSON that the Javascript library does.
 
+The next biggest change is to be consistent with time. There are a
+bunch of places that the Javascript uses the current time of day, we
+should pass in one time to both algorithms so that they produce
+consistent results.
+
 ## Sources
 
 For our port, we're using:

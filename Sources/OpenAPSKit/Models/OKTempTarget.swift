@@ -1,6 +1,6 @@
 import Foundation
 
-public struct TempTarget: Codable, Identifiable, Equatable, Hashable {
+public struct OKTempTarget: Codable, Identifiable, Equatable, Hashable {
     public var id = UUID().uuidString
     let name: String?
     var createdAt: Date
@@ -15,10 +15,10 @@ public struct TempTarget: Codable, Identifiable, Equatable, Hashable {
     static let cancel = "Cancel"
 
     var displayName: String {
-        name ?? reason ?? TempTarget.custom
+        name ?? reason ?? OKTempTarget.custom
     }
 
-    public static func == (lhs: TempTarget, rhs: TempTarget) -> Bool {
+    public static func == (lhs: OKTempTarget, rhs: OKTempTarget) -> Bool {
         lhs.createdAt == rhs.createdAt
     }
 
@@ -26,20 +26,20 @@ public struct TempTarget: Codable, Identifiable, Equatable, Hashable {
         hasher.combine(createdAt)
     }
 
-    static func cancel(at date: Date) -> TempTarget {
-        TempTarget(
-            name: TempTarget.cancel,
+    static func cancel(at date: Date) -> OKTempTarget {
+        OKTempTarget(
+            name: OKTempTarget.cancel,
             createdAt: date,
             targetTop: 0,
             targetBottom: 0,
             duration: 0,
-            enteredBy: TempTarget.manual,
-            reason: TempTarget.cancel
+            enteredBy: OKTempTarget.manual,
+            reason: OKTempTarget.cancel
         )
     }
 }
 
-extension TempTarget {
+extension OKTempTarget {
     private enum CodingKeys: String, CodingKey {
         case id = "_id"
         case name

@@ -1,6 +1,6 @@
 import Foundation
 
-enum GlucoseUnits: String, Codable, Equatable {
+enum OKGlucoseUnits: String, Codable, Equatable {
     case mgdL = "mg/dL"
     case mmolL = "mmol/L"
 

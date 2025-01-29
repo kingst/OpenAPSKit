@@ -11,18 +11,18 @@ import Foundation
 
 @Suite("Target Profile")
 struct TargetTests {
-    let standardTargets = BGTargets(
+    let standardTargets = OKBGTargets(
         units: .mgdL,
         userPreferredUnits: .mgdL,
         targets: [
-            BGTargetEntry(low: 100, high: 120, start: "00:00:00", offset: 0),
-            BGTargetEntry(low: 90, high: 110, start: "03:00:00", offset: 180),
-            BGTargetEntry(low: 110, high: 130, start: "06:00:00", offset: 360)
+            OKBGTargetEntry(low: 100, high: 120, start: "00:00:00", offset: 0),
+            OKBGTargetEntry(low: 90, high: 110, start: "03:00:00", offset: 180),
+            OKBGTargetEntry(low: 110, high: 130, start: "06:00:00", offset: 360)
         ]
     )
     
     let tempTargets = [
-        TempTarget(
+        OKTempTarget(
             name: nil,
             createdAt: Calendar.current.date(from: DateComponents(year: 2025, month: 1, day: 26, hour: 2))!,
             targetTop: 100,
@@ -33,7 +33,7 @@ struct TargetTests {
         )
     ]
     
-    let profile = Profile()
+    let profile = OKProfile()
     
     @Test("should return correct target from schedule")
     func correctTargetFromSchedule() async throws {
@@ -46,7 +46,7 @@ struct TargetTests {
     @Test("should override from Profile targetBg")
     func profileOverride() async throws {
         let now = Calendar.current.date(from: DateComponents(year: 2025, month: 1, day: 26, hour: 1))!
-        var profile = Profile()
+        var profile = OKProfile()
         profile.targetBg = 110
         let (_, result) = try Targets.bgTargetsLookup(targets: standardTargets, tempTargets: tempTargets, profile: profile, now: now)
         #expect(result.high == 110)
@@ -73,7 +73,7 @@ struct TargetTests {
     @Test("should handle temp target cancellation")
     func handleTempTargetCancellation() async throws {
         let cancelTempTargets = [
-            TempTarget(
+            OKTempTarget(
                 name: nil,
                 createdAt: Calendar.current.date(from: DateComponents(year: 2025, month: 1, day: 26, hour: 2, minute: 30))!,
                 targetTop: 0,
@@ -91,11 +91,11 @@ struct TargetTests {
     
     @Test("should bound target range for mmol/L input")
     func boundMmolTargets() async throws {
-        let mmolTargets = BGTargets(
+        let mmolTargets = OKBGTargets(
             units: .mmolL,
             userPreferredUnits: .mmolL,
             targets: [
-                BGTargetEntry(low: 3, high: 4, start: "00:00:00", offset: 0)
+                OKBGTargetEntry(low: 3, high: 4, start: "00:00:00", offset: 0)
             ]
         )
         let (_, result) = try Targets.bgTargetsLookup(targets: mmolTargets, tempTargets: [], profile: profile)
@@ -105,11 +105,11 @@ struct TargetTests {
     
     @Test("should enforce hard limits on target range")
     func enforceHardLimits() async throws {
-        let extremeTargets = BGTargets(
+        let extremeTargets = OKBGTargets(
             units: .mgdL,
             userPreferredUnits: .mgdL,
             targets: [
-                BGTargetEntry(low: 40, high: 250, start: "00:00:00", offset: 0)
+                OKBGTargetEntry(low: 40, high: 250, start: "00:00:00", offset: 0)
             ]
         )
         let (_, result) = try Targets.bgTargetsLookup(targets: extremeTargets, tempTargets: [], profile: profile)
